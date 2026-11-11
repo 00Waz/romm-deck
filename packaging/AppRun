@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# AppImage entry point. First run (or --install) opens the installer GUI;
+# the installed copy, or --run, starts the app directly.
+HERE="$(dirname "$(readlink -f "$0")")"
+# Steam injects its own runtime libraries into shortcuts; system Python/GTK must not use them
+unset LD_PRELOAD LD_LIBRARY_PATH PYTHONHOME PYTHONPATH
+cd "$HERE/usr/share/romm-deck" || exit 1
+INSTALLED="$HOME/Applications/RomM-Deck.AppImage"
+args=()
+mode=""
+for a in "$@"; do
+  case "$a" in
+    --run) mode=run ;;
+    --install) mode=install ;;
+    *) args+=("$a") ;;
+  esac
+done
+if [ -z "$mode" ]; then
+  if [ -n "$APPIMAGE" ] && [ "$(readlink -f "$APPIMAGE")" = "$(readlink -f "$INSTALLED")" ]; then
+    mode=run
+  elif [ -n "$GAMESCOPE_WAYLAND_DISPLAY" ] || [ "$SteamGamepadUI" = 1 ]; then
+    mode=run       # Game Mode: never show the installer
+  else
+    mode=install
+  fi
+fi
+if [ "$mode" = install ]; then
+  exec python3 -m rommdeck --install "${args[@]}"
+fi
+exec python3 -m rommdeck "${args[@]}"

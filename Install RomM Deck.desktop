@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Install RomM Deck
+Comment=Open the RomM Deck installer
+Exec=sh -c "cd \\"\\$(dirname \\"\\$1\\")\\" || exit 1; A=\\"\\$PWD/RomM-Deck-x86_64.AppImage\\"; err() { kdialog --error \\"\\$1\\" --title \\"RomM Deck\\"; exit 1; }; [ -f \\"\\$A\\" ] || err \\"RomM-Deck-x86_64.AppImage was not found next to this file.\\"; chmod +x \\"\\$A\\"; unset LD_PRELOAD LD_LIBRARY_PATH PYTHONHOME PYTHONPATH; \\"\\$A\\" --install || APPIMAGE_EXTRACT_AND_RUN=1 \\"\\$A\\" --install || err \\"The installer could not start. Run the AppImage in a terminal to see why.\\"" sh %k
+Icon=system-software-install
+Terminal=false
+Categories=Game;
